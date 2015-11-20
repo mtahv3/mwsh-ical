@@ -1,0 +1,13 @@
+web:
+  build: .
+  links:
+   - redis-server
+  ports:
+   - "3501:80"
+  volumes:
+   - .:/var/www/qhl
+  environment:
+   - "REDIS_PORT=6379"
+   - "REDIS_HOST=redis-server"
+redis-server:
+  image: mtahv3/oberd-redis:0.1
