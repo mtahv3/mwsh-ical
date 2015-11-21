@@ -14,8 +14,7 @@ class ScheduleController extends Controller{
     {
         $cachedCalendar=$this->tryToGetFromCache($leagueId,$teamId);
         if($cachedCalendar){
-            echo $cachedCalendar;
-            //$this->returnCalendar($cachedCalendar);
+            $this->outputiCal($cachedCalendar);
         }else{
 
             $scheduleArray=$this->fetchAndParseSchedule($leagueId, $teamId);
@@ -31,8 +30,15 @@ class ScheduleController extends Controller{
 
             $this->addToCache($iCalText, $leagueId, $teamId);
 
-            echo $iCalText;
+            $this->outputiCal($iCalText);
         }
+    }
+
+    protected function outputiCal($iCalText){
+        header('Content-type: text/calendar; charset=utf-8');
+        header('Content-Disposition: inline; filename=calendar.ics');
+
+        echo $iCalText;
     }
 
     protected function fetchAndParseSchedule($leagueId, $teamId){
