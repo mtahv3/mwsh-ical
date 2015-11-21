@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\QHL;
 
 use App\Http\Controllers\Controller;
-use DOMDocument;
-use DateTime;
+use \DOMDocument;
+use \DateTime;
 use App\Models\Schedule;
 use Illuminate\Support\Facades\Cache;
 
