@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use \DOMDocument;
+use \DOMXPath;
 
 class DomParser{
 
@@ -25,5 +26,12 @@ class DomParser{
         $doc->preserveWhiteSpace = false;
 
         return $doc;
+    }
+
+    public function getElementsByClassName(DOMDocument $dom, $className){
+        $finder=new \DOMXPath($dom);
+        $nodes = $finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' $className ')]");
+
+        return $nodes;
     }
 }
