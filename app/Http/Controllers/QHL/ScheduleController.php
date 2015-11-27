@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\QHL;
 
+use App\Exceptions\QHL\URLNotFoundException;
 use App\Http\Controllers\Controller;
-use \DOMDocument;
+use App\Models\DomParser;
 use \DateTime;
 use App\Models\Schedule;
 use Illuminate\Support\Facades\Cache;
@@ -19,7 +20,6 @@ class ScheduleController extends Controller{
 
             $scheduleArray=$this->fetchAndParseSchedule($leagueId, $teamId);
 
-            //print_r($scheduleArray);
             $schedule=new Schedule($scheduleArray["leagueName"], $scheduleArray["teamName"], $leagueId, $teamId, $scheduleArray["teamUrl"]);
 
             foreach($scheduleArray["schedule"] as $item){
@@ -35,9 +35,13 @@ class ScheduleController extends Controller{
     }
 
     protected function outputiCal($iCalText){
-        header('Content-type: text/calendar; charset=utf-8');
-        header('Content-Disposition: inline; filename=calendar.ics');
 
+        if(isset($_ENV['APP_ENV']) && $_ENV['APP_ENV']=="dev"){
+            echo "<pre>";
+        }else {
+            header('Content-type: text/calendar; charset=utf-8');
+            header('Content-Disposition: inline; filename=calendar.ics');
+        }
         echo $iCalText;
     }
 
@@ -47,12 +51,12 @@ class ScheduleController extends Controller{
         $teamUrl=$urls["TeamURL"];
 
         $dates=$this->getLeagueDates($leagueUrl);
-
         return $this->getTeamSchedule($teamUrl, $dates);
     }
 
     protected function getTeamSchedule($teamUrl, $dates){
-        $dom=$this->getDOMDocumentFromURL($teamUrl);
+        $parser=new DomParser();
+        $dom=$parser->getDOMDocumentFromURL($teamUrl);
 
         $schedule=array();
 
@@ -120,7 +124,8 @@ class ScheduleController extends Controller{
     }
 
     protected function getLeagueDates($leagueUrl){
-        $dom=$this->getDOMDocumentFromURL($leagueUrl);
+        $parser=new DomParser();
+        $dom=$parser->getDOMDocumentFromURL($leagueUrl);
 
         $datesArray=array();
 
@@ -202,26 +207,13 @@ class ScheduleController extends Controller{
         Cache::put("SCHEDULE-".$leagueId."-".$teamId, $icalString, $expireMinutes);
     }
 
-    protected function getDOMDocumentFromURL($url){
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
-        $content = curl_exec($ch);
-        curl_close($ch);
-
-        $doc = new \DOMDocument();
-        //php DOM document doesn't work well with HTML 5 and non-well formatted
-        //HTML, so let's just suppress the warnings for now (not the best method, but
-        //it works)
-        @$doc->loadHTML($content);
-        $doc->preserveWhiteSpace = false;
-
-        return $doc;
-    }
-
     protected function getLeagueAndTeamUrl($leagueId, $teamId){
         $teamUrl=getenv("QHL_TEAM_URL");
         $leagueUrl=getenv("QHL_LEAGUE_URL");
+
+        if($teamUrl===false || $leagueUrl===false){
+            throw new URLNotFoundException();
+        }
 
         $teamUrl=str_replace("{LID}", $leagueId, $teamUrl);
         $teamUrl=str_replace("{TID}", $teamId, $teamUrl);
