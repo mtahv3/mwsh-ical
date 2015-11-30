@@ -12,7 +12,8 @@
 */
 
 $app->get('/', function () use ($app) {
-    return $app->welcome();
+    return view('index');
+    //return $app->welcome();
 });
 
 $app->get('schedule/league/{leagueId:[\d]+}/team/{teamId:[\d]+}', 'QHL\ScheduleController@getSchedule');
