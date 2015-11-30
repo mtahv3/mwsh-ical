@@ -10,30 +10,53 @@ use Illuminate\Support\Facades\Cache;
 class LeagueController extends Controller{
 
     public function getLeagues(){
-        $leagueUrl=$this->getLeaguesUrl();
 
-        $parser=new DomParser();
-        $dom=$parser->getDOMDocumentFromURL($leagueUrl);
+        if(!$json=$this->tryToGetFromCache()){
+            $leagueUrl=$this->getLeaguesUrl();
 
-        $daysAndTeams=$this->parseTeamsByDay($dom, $parser);
+            $parser=new DomParser();
+            $dom=$parser->getDOMDocumentFromURL($leagueUrl);
 
-        return json_encode($daysAndTeams, JSON_PRETTY_PRINT);
+            $daysAndLeagues=$this->parseLeaguesByDay($dom, $parser);
+
+            $json=json_encode($daysAndLeagues, JSON_PRETTY_PRINT);
+
+            $this->addToCache($json);
+        }
+
+        return $json;
     }
 
-    protected function parseTeamsByDay(\DOMDocument $dom, DomParser $parser){
-        $headerNodes=$parser->getElementsByClassName($dom, "panel-heading");
-        $teamsNodes=$parser->getElementsByClassName($dom, "panel-body");
+    protected function tryToGetFromCache(){
+        $retVal=false;
 
-        $teamsByDay=array();
+        if(Cache::has("LEAGUES")){
+            $retVal=Cache::get("LEAGUES");
+        }
+
+        return $retVal;
+    }
+
+    protected function addToCache($leagueJson){
+        $expireMinutes = (getenv("REDIS_EXPIRE_MINUTES") ? getenv("REDIS_EXPIRE_MINUTES") : 60);
+
+        Cache::put("LEAGUES", $leagueJson, $expireMinutes);
+    }
+
+    protected function parseLeaguesByDay(\DOMDocument $dom, DomParser $parser){
+        $headerNodes=$parser->getElementsByClassName($dom, "panel-heading");
+        $leaguesNodes=$parser->getElementsByClassName($dom, "panel-body");
+
+        $leaguesByDay=array();
 
         for($i=0;$i<$headerNodes->length;$i++){
             $array=array();
             $headerNode=$headerNodes[$i];
             $array['day']=$headerNode->nodeValue;
 
-            $teamNode=$teamsNodes[$i];
+            $leagueNode=$leaguesNodes[$i];
 
-            foreach($teamNode->childNodes as $child){
+            foreach($leagueNode->childNodes as $child){
 
                 if($child->tagName=="p") {
                     $leagueUrl=$child->firstChild->getAttribute("href");
@@ -43,16 +66,16 @@ class LeagueController extends Controller{
                     }else{
                         $leagueId=0;
                     }
-                    $array['teams'][] = array("name"=>$child->nodeValue, "id"=>$leagueId);
+                    $array['leagues'][] = array("name"=>$child->nodeValue, "id"=>$leagueId);
                 }
             }
 
-            if(isset($array["teams"]) && count($array["teams"])){
-                $teamsByDay[]=$array;
+            if(isset($array["leagues"]) && count($array["leagues"])){
+                $leaguesByDay[]=$array;
             }
         }
 
-        return $teamsByDay;
+        return $leaguesByDay;
     }
 
     protected function getLeaguesUrl(){
@@ -64,6 +87,4 @@ class LeagueController extends Controller{
 
         return $leagueUrl;
     }
-
-
 }
