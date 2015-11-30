@@ -11,8 +11,8 @@ class LeagueController extends Controller{
 
     public function getLeagues(){
 
-        if(!$json=$this->tryToGetFromCache()){
-            $leagueUrl=$this->getLeaguesUrl();
+        if(!$json=$this->tryToGetLeaguesFromCache()){
+            $leagueUrl=$this->getAllLeaguesUrl();
 
             $parser=new DomParser();
             $dom=$parser->getDOMDocumentFromURL($leagueUrl);
@@ -21,13 +21,70 @@ class LeagueController extends Controller{
 
             $json=json_encode($daysAndLeagues, JSON_PRETTY_PRINT);
 
-            $this->addToCache($json);
+            $this->addLeaguesToCache($json);
         }
 
         return $json;
     }
 
-    protected function tryToGetFromCache(){
+    public function getTeams($leagueId){
+        if(!$json=$this->tryToGetTeamsFromCache($leagueId)) {
+            $leagueUrl = $this->getLeagueUrl($leagueId);
+
+            $parser = new DomParser();
+            $dom = $parser->getDOMDocumentFromURL($leagueUrl);
+
+            $teamsInLeague = $this->parseTeamsByLeague($dom);
+            $json=json_encode($teamsInLeague, JSON_PRETTY_PRINT);
+
+            $this->addTeamsToCache($json, $leagueId);
+        }
+
+        return $json;
+    }
+
+    protected function parseTeamsByLeague(\DOMDocument $dom){
+
+        $teams=array();
+
+        $tables=$dom->getElementsByTagName("table");
+
+        if($tables->length > 0){
+            $teamsTable=$tables[0];
+
+            $tableBodies=$teamsTable->getElementsByTagName("tbody");
+
+            if($tableBodies->length==1){
+                $tableBody=$tableBodies[0];
+
+                $tableRows=$tableBody->getElementsByTagName("tr");
+
+                foreach($tableRows as $tableRow){
+                    $tableCells=$tableRow->getElementsByTagName("td");
+
+                    if($tableCells->length == 11){
+                        $teamNameCell=$tableCells[1];
+                        $teamName=$teamNameCell->nodeValue;
+
+                        $teamLink = $teamNameCell->firstChild->getAttribute("href");
+                        $linkPieces = explode("TeamID=", $teamLink);
+
+                        if(count($linkPieces) == 2){
+                            $teamId = $linkPieces[1];
+
+                            $teams[]=array("name"=>$teamName, "id"=>$teamId);
+                        }
+                    }
+                }
+            }
+
+
+        }
+
+        return $teams;
+    }
+
+    protected function tryToGetLeaguesFromCache(){
         $retVal=false;
 
         if(Cache::has("LEAGUES")){
@@ -37,10 +94,24 @@ class LeagueController extends Controller{
         return $retVal;
     }
 
-    protected function addToCache($leagueJson){
+    protected function tryToGetTeamsFromCache($leagueId){
+        if(Cache::has("TEAMS-".$leagueId)){
+            return Cache::get("TEAMS-".$leagueId);
+        }
+
+        return false;
+    }
+
+    protected function addLeaguesToCache($leagueJson){
         $expireMinutes = (getenv("REDIS_EXPIRE_MINUTES") ? getenv("REDIS_EXPIRE_MINUTES") : 60);
 
         Cache::put("LEAGUES", $leagueJson, $expireMinutes);
+    }
+
+    protected function addTeamsToCache($teamsJson, $leagueId){
+        $expireMinutes = (getenv("REDIS_EXPIRE_MINUTES") ? getenv("REDIS_EXPIRE_MINUTES") : 60);
+
+        Cache::put("TEAMS-".$leagueId, $teamsJson, $expireMinutes);
     }
 
     protected function parseLeaguesByDay(\DOMDocument $dom, DomParser $parser){
@@ -78,12 +149,24 @@ class LeagueController extends Controller{
         return $leaguesByDay;
     }
 
-    protected function getLeaguesUrl(){
-        $leagueUrl=getenv("QHL_ALL_LEAGUES_URL");
+    protected function getAllLeaguesUrl(){
+        $allLeaguesUrl=getenv("QHL_ALL_LEAGUES_URL");
+
+        if($allLeaguesUrl===false){
+            throw new URLNotFoundException;
+        }
+
+        return $allLeaguesUrl;
+    }
+
+    protected function getLeagueUrl($leagueId){
+        $leagueUrl=getenv("QHL_LEAGUE_URL");
 
         if($leagueUrl===false){
             throw new URLNotFoundException;
         }
+
+        $leagueUrl=str_replace("{LID}", $leagueId, $leagueUrl);
 
         return $leagueUrl;
     }
