@@ -99,13 +99,20 @@
                                 </select>
                             </p>
                             <p>
-                                <button type="button" id='generateButton' class="btn btn-info">Generate iCal Link</button>
+                                <button type="button" id='generateButton' class="btn btn-info">Generate Calendar Link</button>
                             </p>
                             <p>
                                 <label for="url">Calendar Link</label>
 
 
-                            <h4 id="url"></h4>
+                                <h4 id="url"></h4>
+                                <h7>(copy above link and add it as a subscribed calendar)</h7>
+                            </p>
+                            <p>
+                                <video webkit-playsinline="" loop="loop" muted="muted" autoplay="autoplay" preload="auto" poster="//i.imgur.com/qTQkCDDh.jpg" style="width: 300px; height: 533px;">
+                                    <source type="video/webm" src="//i.imgur.com/qTQkCDD.webm"></source>
+                                    <source type="video/mp4" src="//i.imgur.com/qTQkCDD.mp4"></source>
+                                </video>
                             </p>
                         </div>
                         <p>
