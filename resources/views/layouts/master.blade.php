@@ -89,7 +89,7 @@
                             <p>
                                 <label for="selectLeague">Select your league</label>
                                 <select class="form-control" id="selectLeague">
-
+                                    <option value="0">Select your league</option>
                                 </select>
                             </p>
                             <p>
@@ -99,7 +99,26 @@
                                 </select>
                             </p>
                             <p>
-                                <button type="button" class="btn btn-info">Generate iCal Link</button>
+                                <button type="button" id='generateButton' class="btn btn-info">Generate iCal Link</button>
+                            </p>
+                            <p>
+                                <label for="url">Calendar Link</label>
+                                {{--<div class="input-group">--}}
+                                    {{--<input id="url">--}}
+
+                                    {{--<span class="input-group-btn">--}}
+                                        {{--<button class="btn" data-clipboard-target="#url">--}}
+                                            {{--<img src="assets/img/clippy.svg" width="13" alt="Copy to clipboard">--}}
+                                        {{--</button>--}}
+                                    {{--</span>--}}
+                                {{--</div>--}}
+
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="url">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-secondary clipboard" data-clipboard-target="#url" type="button" data-toggle="tooltip" title="Copy to Clipboard" data-placement="bottom">Copy <i class="fa fa-files-o"></i></button>
+                                </span>
+                            </div>
                             </p>
                         </div>
                         <p>
@@ -111,38 +130,6 @@
             </div>
         </div>
     </div>
-    {{--<div class="section section-demo">--}}
-        {{--<div class="container">--}}
-            {{--<div class="row">--}}
-                {{--<div class="col-md-6">--}}
-                    {{--<div id="description-carousel" class="carousel fade" data-ride="carousel">--}}
-                        {{--<div class="carousel-inner">--}}
-                            {{--<div class="item">--}}
-                                {{--<img src="assets/img/template/examples/home_33.jpg" alt="">--}}
-                            {{--</div>--}}
-                            {{--<div class="item active">--}}
-                                {{--<img src="assets/img/template/examples/home_22.jpg" alt="">--}}
-                            {{--</div>--}}
-                            {{--<div class="item">--}}
-                                {{--<img src="assets/img/template/examples/home_11.jpg" alt="">--}}
-                            {{--</div>--}}
-                        {{--</div>--}}
-                        {{--<ol class="carousel-indicators carousel-indicators-blue">--}}
-                            {{--<li data-target="#description-carousel" data-slide-to="0" class=""></li>--}}
-                            {{--<li data-target="#description-carousel" data-slide-to="1" class="active"></li>--}}
-                            {{--<li data-target="#description-carousel" data-slide-to="2" class=""></li>--}}
-                        {{--</ol>--}}
-                    {{--</div>--}}
-                {{--</div>--}}
-                {{--<div class="col-md-5 col-md-offset-1">--}}
-                    {{--<h4 class="header-text">Easy to setup</h4>--}}
-                    {{--<p>--}}
-                        {{--Follow these easy steps to subscribe to your teams calendar. Steps shown are for an iPhone, but should be a similar process on different platforms.--}}
-                    {{--</p>--}}
-                {{--</div>--}}
-            {{--</div>--}}
-        {{--</div>--}}
-    {{--</div>--}}
     <footer class="footer">
         <div class="container">
             <div class="copyright">
@@ -157,4 +144,6 @@
 <script src="assets/js/jquery-ui-1.10.4.custom.min.js" type="text/javascript"></script>
 <script src="assets/js/bootstrap.js" type="text/javascript"></script>
 <script src="assets/js/awesome-landing-page.js" type="text/javascript"></script>
+<script src="assets/js/clipboard.min.js" type="text/javascript"></script>
+<script src="assets/js/mwsh.js" type="text/javascript"></script>
 </html>
