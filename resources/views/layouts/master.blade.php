@@ -80,9 +80,9 @@
         </div>
     </div>
     <div class="section section-presentation">
-        <div class="container">
+        <div class="container text-center">
             <div class="row">
-                <div class="col-md-6">
+
                     <div class="description">
                         <h4 class="header-text">It's Simple!</h4>
                         <div class="form-group">
@@ -110,10 +110,6 @@
                         </div>
                         <p>
                     </div>
-                </div>
-                <div class="col-md-5 col-md-offset-1 hidden-xs">
-
-                </div>
             </div>
         </div>
     </div>
