@@ -103,22 +103,9 @@
                             </p>
                             <p>
                                 <label for="url">Calendar Link</label>
-                                {{--<div class="input-group">--}}
-                                    {{--<input id="url">--}}
 
-                                    {{--<span class="input-group-btn">--}}
-                                        {{--<button class="btn" data-clipboard-target="#url">--}}
-                                            {{--<img src="assets/img/clippy.svg" width="13" alt="Copy to clipboard">--}}
-                                        {{--</button>--}}
-                                    {{--</span>--}}
-                                {{--</div>--}}
 
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="url">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-secondary clipboard" data-clipboard-target="#url" type="button" data-toggle="tooltip" title="Copy to Clipboard" data-placement="bottom">Copy <i class="fa fa-files-o"></i></button>
-                                </span>
-                            </div>
+                            <h4 id="url"></h4>
                             </p>
                         </div>
                         <p>
@@ -144,6 +131,5 @@
 <script src="assets/js/jquery-ui-1.10.4.custom.min.js" type="text/javascript"></script>
 <script src="assets/js/bootstrap.js" type="text/javascript"></script>
 <script src="assets/js/awesome-landing-page.js" type="text/javascript"></script>
-<script src="assets/js/clipboard.min.js" type="text/javascript"></script>
 <script src="assets/js/mwsh.js" type="text/javascript"></script>
 </html>

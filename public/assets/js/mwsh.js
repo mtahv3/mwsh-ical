@@ -40,11 +40,8 @@ $(document).ready(function(){
         if(selectedLeague != 0 && selectedTeam != 0){
             var url="http://"+window.location.host+"/schedule/league/"+selectedLeague+"/team/"+selectedTeam;
 
-            $("#url").val(url);
+            $("#url").html(url);
         }
     });
 
-    var clipboard = new Clipboard('.clipboard');
-
-    $('[data-toggle="tooltip"]').tooltip();
 });
