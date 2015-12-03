@@ -41,9 +41,14 @@ $(document).ready(function(){
     $('#generateButton').click(function(){
         var selectedLeague=$('#selectLeague').val();
         var selectedTeam=$('#selectTeam').val();
+        var reminder=$('#reminder').val();
 
         if(selectedLeague != 0 && selectedTeam != 0){
             var url="http://"+window.location.host+"/schedule/league/"+selectedLeague+"/team/"+selectedTeam;
+
+            if(reminder != 0){
+                url+="/reminder/"+reminder;
+            }
 
             $("#url").html( $("<a>", { href: url, text: url }));
         }
