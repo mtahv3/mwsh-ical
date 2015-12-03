@@ -54,8 +54,8 @@
                     <div class="parallax-image">
 
                         <video webkit-playsinline="" loop="loop" muted="muted" autoplay="autoplay" preload="auto" poster="//i.imgur.com/5RwhGBjh.jpg" style="width: 300px; height: 533px;">
-                            <source type="video/webm" src="//i.imgur.com/5RwhGBj.webm"></source>
-                            <source type="video/mp4" src="//i.imgur.com/5RwhGBj.mp4"></source>
+                            <source type="video/webm" src="//i.imgur.com/5RwhGBj.webm" />
+                            <source type="video/mp4" src="//i.imgur.com/5RwhGBj.mp4" />
                         </video>
 
                         {{--<img class="phone" src="assets/img/mov2.gif" style="margin-top: 20px"/>--}}
@@ -99,6 +99,16 @@
                                 </select>
                             </p>
                             <p>
+                                <label for="selectTeam">Select Your Reminder Preference</label>
+                                <select class="form-control" id="reminder">
+                                    <option value="0">None</option>
+                                    <option value="30">30 Minutes</option>
+                                    <option value="45">45 Minutes</option>
+                                    <option value="60">1 Hour</option>
+                                    <option value="120">2 Hours</option>
+                                </select>
+                            </p>
+                            <p>
                                 <button type="button" id='generateButton' class="btn btn-info">Generate Calendar Link</button>
                             </p>
                             <p>
@@ -110,8 +120,8 @@
                             </p>
                             <p>
                                 <video webkit-playsinline="" loop="loop" muted="muted" autoplay="autoplay" preload="auto" poster="//i.imgur.com/qTQkCDDh.jpg" style="width: 300px; height: 533px;">
-                                    <source type="video/webm" src="//i.imgur.com/qTQkCDD.webm"></source>
-                                    <source type="video/mp4" src="//i.imgur.com/qTQkCDD.mp4"></source>
+                                    <source type="video/webm" src="//i.imgur.com/qTQkCDD.webm" />
+                                    <source type="video/mp4" src="//i.imgur.com/qTQkCDD.mp4" />
                                 </video>
                             </p>
                         </div>

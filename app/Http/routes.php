@@ -17,6 +17,7 @@ $app->get('/', function () use ($app) {
 });
 
 $app->get('schedule/league/{leagueId:[\d]+}/team/{teamId:[\d]+}', 'QHL\ScheduleController@getSchedule');
+$app->get('schedule/league/{leagueId:[\d]+}/team/{teamId:[\d]+}/reminder/{reminder:[\d]+}', 'QHL\ScheduleController@getSchedule');
 $app->get('league', 'QHL\LeagueController@getLeagues');
 $app->get('league/{leagueId:[\d]+}/teams', 'QHL\LeagueController@getTeams');
 $app->get('cache/flush', 'QHL\CacheController@clearCache');

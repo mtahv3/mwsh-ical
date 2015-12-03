@@ -32,7 +32,7 @@ class Schedule{
         $this->items[]=$scheduleItem;
     }
 
-    public function toiCal(){
+    public function toiCal($reminder){
         $iCalStr="BEGIN:VCALENDAR".PHP_EOL."VERSION:2.0".PHP_EOL."METHOD:PUBLISH".PHP_EOL.PHP_EOL;
 
         $iCalStr.="X-WR-CALNAME:".$this->teamName . " " .$this->leagueName . " MWSH".PHP_EOL;
@@ -50,6 +50,15 @@ class Schedule{
             $iCalStr.="UID:".$this->leagueId."-".$item->getShortTime()."-".$this->teamId.PHP_EOL;
             $iCalStr.="URL:".$this->teamUrl.PHP_EOL;
             $iCalStr.="DESCRIPTION:".$item->getDescription().PHP_EOL;
+
+            if(!is_null($reminder)){
+                $iCalStr.="BEGIN:VALARM".PHP_EOL;
+                $iCalStr.="TRIGGER:-PT".(int)$reminder."M".PHP_EOL;
+                $iCalStr.="X-WR-ALARMUID:"."ALARM-".$this->leagueId."-".$item->getShortTime()."-".$this->teamId.PHP_EOL;
+                $iCalStr.="ACTION:DISPLAY".PHP_EOL;
+                $iCalStr.="DESCRIPTION:".$item->getDescription().PHP_EOL;
+                $iCalStr.="END:VALARM".PHP_EOL;
+            }
 
             $iCalStr.="END:VEVENT".PHP_EOL;
         }

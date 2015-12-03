@@ -11,27 +11,34 @@ use Illuminate\Support\Facades\Cache;
 
 class ScheduleController extends Controller{
 
-    public function getSchedule($leagueId, $teamId)
+    public function getSchedule($leagueId, $teamId, $reminder=null)
     {
         $cachedCalendar=$this->tryToGetFromCache($leagueId,$teamId);
         if($cachedCalendar){
-            $this->outputiCal($cachedCalendar);
+            $schedule=$this->scheduleFromArray($cachedCalendar, $leagueId, $teamId);
         }else{
 
             $scheduleArray=$this->fetchAndParseSchedule($leagueId, $teamId);
 
-            $schedule=new Schedule($scheduleArray["leagueName"], $scheduleArray["teamName"], $leagueId, $teamId, $scheduleArray["teamUrl"]);
+            $schedule=$this->scheduleFromArray($scheduleArray, $leagueId, $teamId);
 
-            foreach($scheduleArray["schedule"] as $item){
-                $schedule->addScheduleItem($item["DateTime"], $item["HomeTeam"], $item["AwayTeam"], $item["ShortDate"]);
-            }
+            $this->addToCache($scheduleArray, $leagueId, $teamId);
 
-            $iCalText=$schedule->toiCal();
-
-            $this->addToCache($iCalText, $leagueId, $teamId);
-
-            $this->outputiCal($iCalText);
         }
+
+        $iCalText=$schedule->toiCal($reminder);
+
+        $this->outputiCal($iCalText);
+    }
+
+    protected function scheduleFromArray($scheduleArray, $leagueId, $teamId){
+        $schedule=new Schedule($scheduleArray["leagueName"], $scheduleArray["teamName"], $leagueId, $teamId, $scheduleArray["teamUrl"]);
+
+        foreach($scheduleArray["schedule"] as $item){
+            $schedule->addScheduleItem($item["DateTime"], $item["HomeTeam"], $item["AwayTeam"], $item["ShortDate"]);
+        }
+
+        return $schedule;
     }
 
     protected function outputiCal($iCalText){
