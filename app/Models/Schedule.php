@@ -37,12 +37,31 @@ class Schedule{
         $this->items[]=$scheduleItem;
     }
 
+    protected function getUID($leagueId, $teamId, $item, $usedIds, $iteration=null)
+    {
+        $uid=$leagueId."-".$item->getShortTime()."-".$this->teamId;
+        if($iteration != null)
+        {
+            $uid.="-".$iteration;
+        }
+
+        if(in_array($uid, $usedIds))
+        {
+            ($iteration == null) ? $iteration=1 : $iteration++;
+            $uid = $this->getUID($leagueId, $teamId, $item, $usedIds, $iteration);
+        }
+
+        return $uid;
+    }
+
     public function toiCal($reminder){
         $iCalStr="BEGIN:VCALENDAR".PHP_EOL."VERSION:2.0".PHP_EOL."METHOD:PUBLISH".PHP_EOL.PHP_EOL;
 
         $iCalStr.="X-WR-CALNAME:".$this->teamName . " " .$this->leagueName . " MWSH".PHP_EOL;
 
         $iCalStr.="PRODID:".$this->teamName . " " . $this->teamId . " " .$this->leagueName . " " . $this->leagueId . PHP_EOL;
+
+        $usedUIDs=[];
 
         /** @var ScheduleItem $item */
         foreach($this->items as $item){
@@ -52,7 +71,9 @@ class Schedule{
             $iCalStr.="DTEND:".$this->formatiCalDateTime($item->getEndTime()).PHP_EOL;
             $iCalStr.="SUMMARY:".$item->getDescription().PHP_EOL;
             $iCalStr.="SEQUENCE:0".PHP_EOL;
-            $iCalStr.="UID:".$this->leagueId."-".$item->getShortTime()."-".$this->teamId.PHP_EOL;
+            $uid=$this->getUID($this->leagueId, $this->teamId, $item, $usedUIDs);
+            $usedUIDs[]=$uid;
+            $iCalStr.="UID:".$uid.PHP_EOL;
             $iCalStr.="URL:".$this->teamUrl.PHP_EOL;
             $iCalStr.="DESCRIPTION:".$item->getDescription().PHP_EOL;
 
