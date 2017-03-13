@@ -19,11 +19,16 @@ class Schedule{
     protected $teamUrl;
 
     public function __construct($leagueName, $teamName, $leagueId, $teamId, $teamUrl){
-        $this->leagueName=$leagueName;
-        $this->teamName=$teamName;
+        $this->leagueName=$this->removeNewlines($leagueName);
+        $this->teamName=$this->removeNewlines($teamName);
         $this->leagueId=$leagueId;
         $this->teamId=$teamId;
         $this->teamUrl=$teamUrl;
+    }
+
+    protected function removeNewlines($string)
+    {
+        return trim(preg_replace('/\s+/', ' ', $string));
     }
 
     public function addScheduleItem(\DateTime $dateTime, $homeTeam, $awayTeam, $shortDate){

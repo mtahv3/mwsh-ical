@@ -110,7 +110,12 @@ class ScheduleController extends Controller{
                         $time = $cells->item(1)->nodeValue;
                         $homeTeam = $cells->item(2)->nodeValue;
                         $awayTeam = $cells->item(4)->nodeValue;
-                        $date=$dates[$weekCounter];
+                        $date=$this->getDateFromDatesArray($dates, $shortDate);
+
+                        if(!$date)
+                        {
+                            continue;
+                        }
 
                         //date example: Thursday, May 14, 2015
                         //time example: 10:10 PM
@@ -128,6 +133,22 @@ class ScheduleController extends Controller{
         }
 
         return $schedule;
+    }
+
+    protected function getDateFromDatesArray($datesArray, $shortDate)
+    {
+        $tz = new \DateTimeZone('America/Chicago');
+        $shortDateFormatted = DateTime::createFromFormat('D-M d', $shortDate, $tz)->format('Y-m-d');
+
+        foreach($datesArray as $date)
+        {
+            if($date['formattedDate'] == $shortDateFormatted)
+            {
+                return $date['fullDate'];
+            }
+        }
+
+        return false;
     }
 
     protected function getLeagueDates($leagueUrl){
@@ -176,7 +197,7 @@ class ScheduleController extends Controller{
             $scheduleTableBody=$scheduleTable->getElementsByTagName("tbody")->item(0);
 
             $tableRows=$scheduleTableBody->getElementsByTagName("tr");
-
+            $tz = new \DateTimeZone('America/Chicago');
             foreach($tableRows as $tableRow){
                 $cells=$tableRow->getElementsByTagName("td");
 
@@ -187,8 +208,8 @@ class ScheduleController extends Controller{
                     if($colSpan=="6") {
                         $date=$cells->item(0)->nodeValue;
 
-
-                        $datesArray[]=$date;
+                        $formattedDate = DateTime::createFromFormat('l, F d, Y', $date, $tz)->format('Y-m-d');
+                        $datesArray[]=["fullDate"=>$date, "formattedDate"=>$formattedDate];
                     }
                 }
             }
