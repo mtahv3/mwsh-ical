@@ -137,8 +137,22 @@ class ScheduleController extends Controller{
 
     protected function getDateFromDatesArray($datesArray, $shortDate)
     {
+        $year = date('Y');
+        $yearPlus = $year+1;
+        $yearMinus = $year-1;
+
+        $date = $this->getDateFromDatesArrayWithYear($datesArray, $shortDate, $year);
+        if(!$date) $date = $this->getDateFromDatesArrayWithYear($datesArray, $shortDate, $yearPlus);
+        if(!$date) $date = $this->getDateFromDatesArrayWithYear($datesArray, $shortDate, $yearMinus);
+
+        return $date;
+    }
+
+    protected function getDateFromDatesArrayWithYear($datesArray, $shortDate, $year)
+    {
         $tz = new \DateTimeZone('America/Chicago');
-        $shortDateFormatted = DateTime::createFromFormat('D-M d', $shortDate, $tz)->format('Y-m-d');
+        $shortDate = $shortDate . " $year";
+        $shortDateFormatted = DateTime::createFromFormat('D-M d Y', $shortDate, $tz)->format('Y-m-d');  
 
         foreach($datesArray as $date)
         {
@@ -225,7 +239,6 @@ class ScheduleController extends Controller{
         if(Cache::has("SCHEDULE-".$leagueId."-".$teamId)){
             $retVal=Cache::get("SCHEDULE-".$leagueId."-".$teamId);
         }
-
         return $retVal;
     }
 

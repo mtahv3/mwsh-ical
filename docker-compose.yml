@@ -3,7 +3,7 @@ web:
   links:
    - redis-server
   ports:
-   - "3501:80"
+   - "3509:80"
   volumes:
    - .:/var/www/qhl
   environment:
