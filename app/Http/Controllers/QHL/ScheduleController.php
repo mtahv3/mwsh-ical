@@ -137,22 +137,37 @@ class ScheduleController extends Controller{
 
     protected function getDateFromDatesArray($datesArray, $shortDate)
     {
-        $year = date('Y');
-        $yearPlus = $year+1;
-        $yearMinus = $year-1;
+        $years = $this->extractLeagueYears($datesArray);
 
-        $date = $this->getDateFromDatesArrayWithYear($datesArray, $shortDate, $year);
-        if(!$date) $date = $this->getDateFromDatesArrayWithYear($datesArray, $shortDate, $yearPlus);
-        if(!$date) $date = $this->getDateFromDatesArrayWithYear($datesArray, $shortDate, $yearMinus);
+        foreach($years as $year)
+        {
+            $date = $this->getDateFromDatesArrayWithYear($datesArray, $shortDate, $year);
 
-        return $date;
+            if($date) return $date;
+        }
+
+        return false;
+    }
+
+    protected function extractLeagueYears($datesArray)
+    {
+        $years = [];
+        $tz = new \DateTimeZone('America/Chicago');
+        foreach ($datesArray as $date) {
+            $year = DateTime::createFromFormat('Y-m-d', $date['formattedDate'], $tz)->format('Y');
+            if(! in_array($year, $years)){
+                $years[]=$year;
+            }
+        }
+
+        return $years;
     }
 
     protected function getDateFromDatesArrayWithYear($datesArray, $shortDate, $year)
     {
         $tz = new \DateTimeZone('America/Chicago');
         $shortDate = $shortDate . " $year";
-        $shortDateFormatted = DateTime::createFromFormat('D-M d Y', $shortDate, $tz)->format('Y-m-d');  
+        $shortDateFormatted = DateTime::createFromFormat('D-M d Y', $shortDate, $tz)->format('Y-m-d');
 
         foreach($datesArray as $date)
         {
