@@ -21,6 +21,7 @@ $(document).ready(function(){
         selTeam.attr('disabled', 'disabled');
 
         $('#url').html("");
+        $("#webcal").html("");
         if(selectedLeague != 0){
             $('#selectTeam').html("");
             $.ajax({url: "league/"+selectedLeague+"/teams",
