@@ -117,6 +117,8 @@
 
                                 <h4 id="url"></h4>
                                 <h7>(copy above link and add it as a subscribed calendar)</h7>
+                                <h4 id="webcal"></h4>
+                                <h7>(alternatively, click the webcal link above to automatically subscribe)
                             </p>
                             <p>
                                 <video webkit-playsinline="" loop="loop" muted="muted" autoplay="autoplay" preload="auto" poster="//i.imgur.com/qTQkCDDh.jpg" style="width: 300px; height: 533px;">

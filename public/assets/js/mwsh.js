@@ -49,8 +49,9 @@ $(document).ready(function(){
             if(reminder != 0){
                 url+="/reminder/"+reminder;
             }
-
+            var webcal = url.replace('http://', 'webcal://');
             $("#url").html( $("<a>", { href: url, text: url }));
+            $("#webcal").html($("<a>", { href: webcal, text: webcal }));
         }
     });
 
